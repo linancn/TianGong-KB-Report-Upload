@@ -138,6 +138,7 @@ def get_zotero_item(zot_user_id, zot_catagory, zot_api_key, collection_id, zot_t
                             for author in item["data"].get("creators", [])
                         ),
                         "date": item["data"].get("date", ""),
+                        "parentItem": item["data"]["key"],
                     }
                 )
 
@@ -206,6 +207,7 @@ if zot_user_id and zot_catagory and zot_api_key:
             url_input = df.iloc[selected_indices]["url"].values[0]
             created_at_input = df.iloc[selected_indices]["date"].values[0]
             author_input = df.iloc[selected_indices]["author"].values[0]
+            parentItem_input = df.iloc[selected_indices]["parentItem"].values[0]
 
             raw = get_zotero_attachment(
                 zot_user_id, zot_catagory, zot_api_key, key_input
@@ -238,7 +240,7 @@ if zot_user_id and zot_catagory and zot_api_key:
                     try:
                         response = text_upsert(
                             st.session_state["text_input"],
-                            key_input,
+                            parentItem_input,
                             source_id_input,
                             url_input,
                             created_at_input,
@@ -250,12 +252,12 @@ if zot_user_id and zot_catagory and zot_api_key:
                                 zot_user_id,
                                 zot_catagory,
                                 zot_api_key,
-                                key_input,
+                                parentItem_input,
                                 "uploaded",
                             )
                             st.write(key_input)
                     except:
                         udpate_zotero_tag(
-                            zot_user_id, zot_catagory, zot_api_key, key_input, "failed"
+                            zot_user_id, zot_catagory, zot_api_key, parentItem_input, "failed"
                         )
-                        logging.error(f"uploading {key_input} failed")
+                        logging.error(f"uploading {parentItem_input} failed")
