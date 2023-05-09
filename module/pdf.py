@@ -9,6 +9,10 @@ logging.basicConfig(level=logging.INFO)
 # 简单方法获取范围页面的正文全文
 @st.cache_data
 def parse_paper_range(_pdf, start_page, end_page):
+    # 页码从0开始
+    start_page = start_page - 1
+    end_page = end_page - 1
+
     all_text = []
     if start_page == end_page:
         page_content = _pdf.pages[start_page]
